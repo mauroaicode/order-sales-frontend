@@ -19,10 +19,50 @@ export default {
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
+    '~/plugins/vuelidate',
+    { src: '~/plugins/vue-toastification', mode: 'client', ssr: false}
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
-  components: true,
+  components: {
+    global: true,
+    dirs: [
+      '~/components',
+      '~/components/partials'
+    ]
+  },
+  publicRuntimeConfig: {
+    axios: {
+      baseURL: process.env.BASE_URL_API_BACK
+    }
+  },
+
+  auth: {
+    redirect: {
+      login: 'auth/login',
+      logout: 'auth/login',
+      home: '/'
+    },
+    strategies: {
+      local: {
+        token: {
+          property: 'token',
+          global: true
+          // required: true,
+          // type: 'Bearer'
+        },
+        user: {
+          property: 'user'
+          // autoFetch: true
+        },
+        endpoints: {
+          login: { url: '/login', method: 'post' },
+          logout: { url: '/logout', method: 'post' },
+          user: { url: '/api/user', method: 'get' }
+        }
+      }
+    }
+  },
 
   // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
   buildModules: [
@@ -32,10 +72,9 @@ export default {
 
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
-    // https://go.nuxtjs.dev/axios
-    '@nuxtjs/axios',
-    // https://go.nuxtjs.dev/pwa
     '@nuxtjs/pwa',
+    '@nuxtjs/axios',
+    '@nuxtjs/auth-next'
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
