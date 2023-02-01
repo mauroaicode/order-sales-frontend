@@ -19,7 +19,10 @@ export default {
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
+    '~/plugins/vue-sax',
     '~/plugins/vuelidate',
+    { src: '~/plugins/vue-easytable', ssr: false},
+    { src: '~/plugins/vue-sweetalert2', mode: 'client', ssr: false},
     { src: '~/plugins/vue-toastification', mode: 'client', ssr: false}
   ],
 
@@ -28,10 +31,12 @@ export default {
     global: true,
     dirs: [
       '~/components',
+      '~/components/users',
       '~/components/partials'
     ]
   },
   publicRuntimeConfig: {
+    colorLoading: '#1D4ED8',
     axios: {
       baseURL: process.env.BASE_URL_API_BACK
     }
@@ -40,7 +45,7 @@ export default {
   auth: {
     redirect: {
       login: 'auth/login',
-      logout: 'auth/login',
+      logout: '/auth/login',
       home: '/'
     },
     strategies: {
@@ -58,7 +63,7 @@ export default {
         endpoints: {
           login: { url: '/login', method: 'post' },
           logout: { url: '/logout', method: 'post' },
-          user: { url: '/api/user', method: 'get' }
+          user: { url: '/api/v1/user', method: 'get' }
         }
       }
     }
@@ -68,13 +73,17 @@ export default {
   buildModules: [
     // https://go.nuxtjs.dev/tailwindcss
     '@nuxtjs/tailwindcss',
+    '@nuxtjs/color-mode'
   ],
-
+  colorMode:{
+    classSuffix: '',
+    preference: 'system'
+  },
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
     '@nuxtjs/pwa',
     '@nuxtjs/axios',
-    '@nuxtjs/auth-next'
+    '@nuxtjs/auth-next',
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios

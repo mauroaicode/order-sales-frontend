@@ -8,10 +8,15 @@
           <div>
             <h5 class="text-center text-gray-400 py-2">Bienvenido de nuevo ! 👋</h5>
           </div>
+        <!--  Alerta -->
+          <div>
+              <AlertMessage @clearMessage="clearMessage" :message="messageInvalid[0]"/>
+          </div>
+
           <div>
             <label
               for="email"
-              class="block text-sm uppercase text-gray-500 mb-3 font-bold "
+              class="block text-sm  text-gray-500 mb-3 font-bold "
               :class="{ 'text-red-500': $v.form.email.$error }">Correo Electrónico <span class="text-red-400">*</span>
             </label>
             <input
@@ -27,13 +32,12 @@
               electrónico
               válido.</p>
             <p class="text-red-400 font-bold" v-if="$v.form.email.$error && $v.form.email.email">El
-              correo
-              electrónico es requerido.</p>
+              correo electrónico es requerido.</p>
           </div>
           <div>
             <label
               for="password"
-              class="block text-sm uppercase text-gray-500 mb-3 font-bold"
+              class="block text-sm  text-gray-500 mb-3 font-bold"
               :class="{ 'text-red-500': $v.form.password.$error }">Contraseña <span class="text-red-400">*</span></label>
             <input
               v-model="form.password"
@@ -66,6 +70,8 @@ export default {
   },
   data(){
     return{
+      messageInvalid: '',
+      messageActiveAccount: '',
       form: {
         email: '',
         password: ''
@@ -97,6 +103,9 @@ export default {
           this.messageInvalid = e.response.data.errors.email ? e.response.data.errors.email : ''
 
         })
+    },
+    clearMessage(){
+      this.messageInvalid = ''
     }
   }
 }
