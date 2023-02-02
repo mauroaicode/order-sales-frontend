@@ -2,17 +2,16 @@
   <div class="px-16 py-6">
     <div class="bg-white  rounded-md cursor-pointer p-10 w-full mt-4">
       <div class="flex items-center justify-between">
-        <h2 class="font-bold text-3xl"> Usuarios</h2>
+        <h2 class="font-bold text-3xl"> Productos</h2>
         <button @click="openModal" type="button"
-                class="text-white bg-blue-800 hover:bg-green-500 focus:ring-4 focus:ring-green-600 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 focus:outline-none">
-          Agregar Usuario
+                class="text-white bg-blue-800 hover:bg-green-500 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 focus:outline-none">
+          Agregar Producto
         </button>
       </div>
-
       <!--=====================================
-		          TABLA USUARIOS
-      ======================================-->
-      <div class="my-5" v-if="users && users.length > 0">
+            TABLA DE PRODUCTOS
+     ======================================-->
+      <div class="my-5" v-if="products && products.length > 0">
         <client-only>
           <ve-table
             class="table-auto"
@@ -24,7 +23,7 @@
             row-key-field-name="id"
             :columns="columnsTable"
             :table-data="tableData"/>
-          <div class="table-pagination mt-2" v-if="users.length > 10">
+          <div class="table-pagination mt-2" v-if="products.length > 10">
             <ve-pagination
               :total="totalCount"
               :page-index="pageIndex"
@@ -39,21 +38,20 @@
         <h2 class="text-2xl text-center">No hay usuarios registrados</h2>
       </div>
       <!--=====================================
-		          MODAL PARA AGREGAR USUARIO
+		          MODAL PARA AGREGAR PRODUCTO
        ======================================-->
-      <FormUser ref="addUser" @updateTable="updateTable"/>
+      <FormProduct ref="addProduct" @updateTable="updateTable"/>
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  name: "users",
-  middleware: ['auth'],
+  name: "products",
   data() {
     return {
       exist: false,
-      users: [],
+      products: [],
       /* Diseño de la tabla*/
       rowStyleOption: {
         stripe: true,
@@ -73,34 +71,41 @@ export default {
         {
           field: "name",
           key: "name",
-          title: "Nombre",
-          align: "left"
-        },
-        {
-          field: "email",
-          sortBy: "",
-          key: "email",
-          title: "Correo Electrónico",
-          align: "left"
-        },
-        {
-          field: "roles",
-          key: "roles",
-          title: "Roles",
+          title: "Nombre Producto",
           align: "left",
           renderBodyCell: ({row, column, rowIndex}, h) => {
-            return row.roles.map((item) => {
-              return <span
-                class="bg-green-100 text-green-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">{item.name}</span>
-            })
+            return <div class="flex items-center">
+              <div class="border mr-2">
+                <img class="object-cover h-10 w-10" src={row.picture ? this.$config.baseUrlBack + row.picture : require(`~/assets/images/image-demo.png`)} alt=""/>
+              </div>
+              <div>
+                <h3>{row.name}</h3>
+              </div>
+            </div>
           },
         },
-
+        {
+          field: "description",
+          key: "description",
+          title: "Descripción",
+          align: "left",
+          width: "40%",
+        },
+        {
+          field: "price",
+          key: "price",
+          title: "Precio",
+          align: "left",
+          renderBodyCell: ({row, column, rowIndex}, h) => {
+              return <span class="bg-green-100 text-green-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">${row.price}</span>
+          },
+        },
         {
           field: "created_at",
           key: "created_at",
           title: "Fecha de Registro",
-          align: "left"
+          align: "left",
+
         },
         {
           field: "actions",
@@ -111,7 +116,7 @@ export default {
             let html = <div class="flex">
               <div>
                 <button
-                  on-click={() => this.editUser(row)}
+                  on-click={() => this.editProduct(row)}
                   type="button"
                   class="text-white bg-blue-800 hover:bg-green-500 focus:ring-4 focus:outline-none focus:ring-green-600 font-medium rounded-md text-sm p-2.5 text-center inline-flex items-center mr-2">
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -125,7 +130,7 @@ export default {
               </div>
               <div>
                 <button
-                  on-click={() => this.deleteUser(row.id)}
+                  on-click={() => this.deleteProduct(row.id)}
                   type="button"
                   class="text-white bg-red-500 hover:bg-red-500 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-md text-sm p-2.5 text-center inline-flex items-center mr-2 ">
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -147,56 +152,44 @@ export default {
   },
   methods: {
     /*=============================================
-     FUNCIÓN PARA OBTENER TODOS LOS USUARIOS
-    =============================================*/
-    getUsers() {
-      this.$axios.get('api/v1/get-users').then(resp => {
-        this.users = resp.data.data
-        this.users.length > 0 ?  this.exist = false : this.exist = true // Nos permite saber si tenemos usuarios registrados
-      }).catch(e => {
-        this.exist = true
-        console.log(e)
-        this.$toast.error("Error al obtener los usuarios. Consulte al administrador.");
-      })
-    },
-
-    /*=============================================
      FUNCIÓN PARA  ENVIAR DATOS Y ABRIR MODAL EDITAR
     =============================================*/
-    editUser(user) {
-      this.$refs.addUser.fcOpenModalEdit(user)
+    editProduct(product) {
+      this.$refs.addProduct.fcOpenModalEdit(product)
     },
     /*=============================================
-     FUNCIÓN PARA ABRIR MODAL AGREGAR USUARIO
+     FUNCIÓN PARA ABRIR MODAL AGREGAR PRODUCTO
     =============================================*/
     openModal() {
-      this.$refs.addUser.fcOpenModal()
+      this.$refs.addProduct.fcOpenModal()
     },
     /*=============================================
      FUNCIÓN PARA ACTUALIZAR LOS DATOS DE LA TABLA LUEGO DE GUARDAR O EDITAR
     =============================================*/
     updateTable() {
-      this.getUsers()
+      this.getProducts()
     },
     /*=============================================
-     FUNCIÓN QUE PERMITE LA FUNCIÓN DE PAGINAR
-    =============================================*/
-    pageNumberChange(pageIndex) {
-      this.pageIndex = pageIndex;
-    },
-
-    pageSizeChange(pageSize) {
-      this.pageIndex = 1;
-      this.pageSize = pageSize;
+    FUNCIÓN PARA OBTENER TODOS LOS PRODUCTOS
+   =============================================*/
+    getProducts() {
+      this.$axios.get('api/v1/get-products').then(resp => {
+        this.products = resp.data.data
+        this.products.length > 0 ? this.exist = false : this.exist = true // Nos permite saber si tenemos usuarios registrados
+      }).catch(e => {
+        this.exist = true
+        console.log(e)
+        this.$toast.error("Error al obtener los productos. Consulte al administrador.");
+      })
     },
     /*=============================================
-     FUNCIÓN PARA ELIMINAR EL USUARIO
+     FUNCIÓN PARA ELIMINAR EL PRODUCTO
     =============================================*/
-    deleteUser(id) {
+    deleteProduct(id) {
       /* Confirmamos la acción*/
       this.$swal.fire(
         {
-          title: '¿Esta seguro de eliminar el usuario?',
+          title: '¿Esta seguro de eliminar el producto?',
           icon: 'warning',
           confirmButtonText: 'Estoy Seguro',
           cancelButtonText: 'Cancelar',
@@ -217,20 +210,31 @@ export default {
             text: 'Espere por favor...'
           })
           /* Eliminamos el usuario*/
-          this.$axios.post(`api/v1/delete-user/${id}`).then(resp => {
+          this.$axios.post(`api/v1/delete-product/${id}`).then(resp => {
             this.$vs.loading.close() // Cerrar el Loading
-            this.$toast.success('Usuario eliminado exitosamente!');
+            this.$toast.success('Producto eliminado exitosamente!');
             this.getUsers()
           }).catch(e => {
             /* Capturamos el error y lo guardamos en consola para verlo*/
             this.$vs.loading.close() // Cerrar el Loading
             console.log(e.response)
 
-            this.$toast.error('Error al eliminar el usuario. Consulte al administrador');
+            this.$toast.error('Error al eliminar el producto. Consulte al administrador');
           })
         }
       })
-    }
+    },
+    /*=============================================
+     FUNCIÓN QUE PERMITE LA FUNCIÓN DE PAGINAR
+    =============================================*/
+    pageNumberChange(pageIndex) {
+      this.pageIndex = pageIndex;
+    },
+
+    pageSizeChange(pageSize) {
+      this.pageIndex = 1;
+      this.pageSize = pageSize;
+    },
   },
   computed: {
     /*=============================================
@@ -238,17 +242,17 @@ export default {
     =============================================*/
     tableData() {
       const {pageIndex, pageSize} = this;
-      return this.users.slice((pageIndex - 1) * pageSize, pageIndex * pageSize);
+      return this.products.slice((pageIndex - 1) * pageSize, pageIndex * pageSize);
     },
     /*=============================================
      CANTIDAD DE USUARIOS
     =============================================*/
     totalCount() {
-      return this.users.length;
+      return this.products.length;
     },
   },
   mounted() {
-    this.getUsers()
+    this.getProducts()
   }
 }
 </script>

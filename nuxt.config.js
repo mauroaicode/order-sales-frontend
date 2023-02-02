@@ -19,11 +19,13 @@ export default {
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
+    '~/plugins/bus',
     '~/plugins/vue-sax',
     '~/plugins/vuelidate',
     { src: '~/plugins/vue-easytable', ssr: false},
     { src: '~/plugins/vue-sweetalert2', mode: 'client', ssr: false},
-    { src: '~/plugins/vue-toastification', mode: 'client', ssr: false}
+    {src: '~/plugins/vue-file-agent.js', mode: 'client', ssr: false},
+    { src: '~/plugins/vue-toastification', mode: 'client', ssr: false},
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -31,12 +33,15 @@ export default {
     global: true,
     dirs: [
       '~/components',
+      '~/components/roles',
       '~/components/users',
+      '~/components/products',
       '~/components/partials'
     ]
   },
   publicRuntimeConfig: {
     colorLoading: '#1D4ED8',
+    baseUrlBack: process.env.BASE_URL_API_BACK,
     axios: {
       baseURL: process.env.BASE_URL_API_BACK
     }

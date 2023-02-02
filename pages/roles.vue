@@ -2,17 +2,16 @@
   <div class="px-16 py-6">
     <div class="bg-white  rounded-md cursor-pointer p-10 w-full mt-4">
       <div class="flex items-center justify-between">
-        <h2 class="font-bold text-3xl"> Usuarios</h2>
+        <h2 class="font-bold text-3xl"> Roles</h2>
         <button @click="openModal" type="button"
                 class="text-white bg-blue-800 hover:bg-green-500 focus:ring-4 focus:ring-green-600 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 focus:outline-none">
-          Agregar Usuario
+          Agregar Rol
         </button>
       </div>
-
       <!--=====================================
-		          TABLA USUARIOS
+		          TABLA ROLES
       ======================================-->
-      <div class="my-5" v-if="users && users.length > 0">
+      <div class="my-5" v-if="roles && roles.length > 0">
         <client-only>
           <ve-table
             class="table-auto"
@@ -24,7 +23,7 @@
             row-key-field-name="id"
             :columns="columnsTable"
             :table-data="tableData"/>
-          <div class="table-pagination mt-2" v-if="users.length > 10">
+          <div class="table-pagination mt-2" v-if="roles.length > 10">
             <ve-pagination
               :total="totalCount"
               :page-index="pageIndex"
@@ -36,24 +35,23 @@
         </client-only>
       </div>
       <div v-if="exist">
-        <h2 class="text-2xl text-center">No hay usuarios registrados</h2>
+        <h2 class="text-2xl text-center">No hay roles registrados</h2>
       </div>
       <!--=====================================
-		          MODAL PARA AGREGAR USUARIO
+		          MODAL PARA AGREGAR ROLES
        ======================================-->
-      <FormUser ref="addUser" @updateTable="updateTable"/>
+      <FormRoles ref="addRole" @updateTable="updateTable"/>
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  name: "users",
-  middleware: ['auth'],
+  name: "roles",
   data() {
     return {
       exist: false,
-      users: [],
+      roles: [],
       /* Diseño de la tabla*/
       rowStyleOption: {
         stripe: true,
@@ -77,26 +75,6 @@ export default {
           align: "left"
         },
         {
-          field: "email",
-          sortBy: "",
-          key: "email",
-          title: "Correo Electrónico",
-          align: "left"
-        },
-        {
-          field: "roles",
-          key: "roles",
-          title: "Roles",
-          align: "left",
-          renderBodyCell: ({row, column, rowIndex}, h) => {
-            return row.roles.map((item) => {
-              return <span
-                class="bg-green-100 text-green-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">{item.name}</span>
-            })
-          },
-        },
-
-        {
           field: "created_at",
           key: "created_at",
           title: "Fecha de Registro",
@@ -111,9 +89,9 @@ export default {
             let html = <div class="flex">
               <div>
                 <button
-                  on-click={() => this.editUser(row)}
+                  on-click={() => this.editRole(row)}
                   type="button"
-                  class="text-white bg-blue-800 hover:bg-green-500 focus:ring-4 focus:outline-none focus:ring-green-600 font-medium rounded-md text-sm p-2.5 text-center inline-flex items-center mr-2">
+                  class="text-white bg-blue-800 hover:bg-green-500 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm p-2.5 text-center inline-flex items-center mr-2">
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                        stroke="currentColor" class="w-4 h-4">
                     <path stroke-linecap="round" stroke-linejoin="round"
@@ -125,7 +103,7 @@ export default {
               </div>
               <div>
                 <button
-                  on-click={() => this.deleteUser(row.id)}
+                  on-click={() => this.deleteRol(row.id)}
                   type="button"
                   class="text-white bg-red-500 hover:bg-red-500 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-md text-sm p-2.5 text-center inline-flex items-center mr-2 ">
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -147,36 +125,27 @@ export default {
   },
   methods: {
     /*=============================================
-     FUNCIÓN PARA OBTENER TODOS LOS USUARIOS
-    =============================================*/
-    getUsers() {
-      this.$axios.get('api/v1/get-users').then(resp => {
-        this.users = resp.data.data
-        this.users.length > 0 ?  this.exist = false : this.exist = true // Nos permite saber si tenemos usuarios registrados
-      }).catch(e => {
-        this.exist = true
-        console.log(e)
-        this.$toast.error("Error al obtener los usuarios. Consulte al administrador.");
-      })
-    },
-
-    /*=============================================
-     FUNCIÓN PARA  ENVIAR DATOS Y ABRIR MODAL EDITAR
-    =============================================*/
-    editUser(user) {
-      this.$refs.addUser.fcOpenModalEdit(user)
-    },
-    /*=============================================
-     FUNCIÓN PARA ABRIR MODAL AGREGAR USUARIO
+     FUNCIÓN PARA ABRIR MODAL AGREGAR ROL
     =============================================*/
     openModal() {
-      this.$refs.addUser.fcOpenModal()
+      this.$refs.addRole.fcOpenModal()
+    },
+    /*=============================================
+    FUNCIÓN PARA OBTENER TODOS LOS ROLES
+   =============================================*/
+    getRoles() {
+      this.$axios.get('api/v1/get-roles').then(resp => {
+        this.roles = resp.data.data
+      }).catch(e => {
+        console.log(e)
+        this.$toast.error("Error al obtener los roles. Consulte al administrador.");
+      })
     },
     /*=============================================
      FUNCIÓN PARA ACTUALIZAR LOS DATOS DE LA TABLA LUEGO DE GUARDAR O EDITAR
     =============================================*/
     updateTable() {
-      this.getUsers()
+      this.getRoles()
     },
     /*=============================================
      FUNCIÓN QUE PERMITE LA FUNCIÓN DE PAGINAR
@@ -190,18 +159,18 @@ export default {
       this.pageSize = pageSize;
     },
     /*=============================================
-     FUNCIÓN PARA ELIMINAR EL USUARIO
+     FUNCIÓN PARA ELIMINAR EL ROL
     =============================================*/
-    deleteUser(id) {
+    deleteRol(id) {
       /* Confirmamos la acción*/
       this.$swal.fire(
         {
-          title: '¿Esta seguro de eliminar el usuario?',
+          title: '¿Esta seguro de eliminar el rol?',
           icon: 'warning',
           confirmButtonText: 'Estoy Seguro',
           cancelButtonText: 'Cancelar',
           customClass: {
-            confirmButton: 'text-white bg-blue-700 w-full hover:bg-green-500 focus:ring-1 focus:ring-green-600font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2',
+            confirmButton: 'text-white bg-blue-700 w-full hover:bg-green-500 focus:ring-1 focus:ring-blue-600 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2',
             cancelButton: 'text-white bg-gray-700 w-full hover:bg-gray-800 focus:ring-1 focus:ring-gray-600 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2'
           },
           buttonsStyling: false,
@@ -216,39 +185,44 @@ export default {
             color: this.$config.colorLoading,
             text: 'Espere por favor...'
           })
-          /* Eliminamos el usuario*/
-          this.$axios.post(`api/v1/delete-user/${id}`).then(resp => {
+          /* Eliminamos el rol*/
+          this.$axios.post(`api/v1/delete-role/${id}`).then(resp => {
             this.$vs.loading.close() // Cerrar el Loading
-            this.$toast.success('Usuario eliminado exitosamente!');
-            this.getUsers()
+            this.$toast.success('Rol eliminado exitosamente!');
+            this.getRoles()
           }).catch(e => {
             /* Capturamos el error y lo guardamos en consola para verlo*/
             this.$vs.loading.close() // Cerrar el Loading
-            console.log(e.response)
-
-            this.$toast.error('Error al eliminar el usuario. Consulte al administrador');
+            if(e.response.status === 400) return this.$toast.error(e.response.data[0]);
+            this.$toast.error('Error al eliminar el rol. Consulte al administrador');
           })
         }
       })
-    }
+    },
+    /*=============================================
+     FUNCIÓN PARA ENVIAR DATOS Y ABRIR MODAL EDITAR
+    =============================================*/
+    editRole(role) {
+      this.$refs.addRole.fcOpenModalEdit(role)
+    },
   },
   computed: {
     /*=============================================
-     PASAR LOS DATOS DEL USUARIO A LA TABLA
+     PASAR LOS DATOS ROLES A LA TABLA
     =============================================*/
     tableData() {
       const {pageIndex, pageSize} = this;
-      return this.users.slice((pageIndex - 1) * pageSize, pageIndex * pageSize);
+      return this.roles.slice((pageIndex - 1) * pageSize, pageIndex * pageSize);
     },
     /*=============================================
-     CANTIDAD DE USUARIOS
+     CANTIDAD DE ROLES
     =============================================*/
     totalCount() {
-      return this.users.length;
+      return this.roles.length;
     },
   },
   mounted() {
-    this.getUsers()
+    this.getRoles()
   }
 }
 </script>

@@ -1,6 +1,6 @@
 <template>
  <div class="py-10">
-   <h1 class="text-4xl my-10 font-bold text-center">Ordenes<span class="font-normal">Ventas</span></h1>
+   <h1 class="text-4xl my-10 font-bold text-center text-blue-800">Ordenes<span class="font-normal text-green-400">Ventas</span></h1>
    <h2 class=" text-center text-2xl font-extrabold">Iniciar Sesión</h2>
    <div class="mt-8 mx-auto max-w-md px-4 md:px-0 lg:px-0">
       <div class="bg-white py-8 px-4 shadow">
@@ -50,7 +50,7 @@
             <p class="text-red-400 font-bold" v-if="$v.form.password.$error">La contraseña es requerida.</p>
           </div>
           <div>
-            <button @click="login" type="button" class="text-white bg-blue-700 w-full hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2  focus:outline-none">Iniciar Sesión</button>
+            <button @click="login" type="button" class="text-white bg-blue-800 w-full hover:bg-green-500 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2  focus:outline-none">Iniciar Sesión</button>
           </div>
         </form>
       </div>
