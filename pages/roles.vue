@@ -48,6 +48,7 @@
 <script>
 export default {
   name: "roles",
+  middleware: ['auth', 'admin'],
   data() {
     return {
       exist: false,

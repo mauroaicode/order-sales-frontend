@@ -1266,3 +1266,13 @@
 .ve-pagination .ve-pagination-goto .ve-pagination-goto-input:focus{
   border-color: #1d4ed8 !important;
 }
+.vs-sidebar{
+  max-width: 350px !important;
+}
+.vnis__button{
+  background-color: #12B980 !important;
+}
+.vnis__button:hover{
+  background-color: #1E40AF !important;
+
+}

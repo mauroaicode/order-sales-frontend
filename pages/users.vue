@@ -49,7 +49,7 @@
 <script>
 export default {
   name: "users",
-  middleware: ['auth'],
+  middleware: ['auth', 'admin'],
   data() {
     return {
       exist: false,

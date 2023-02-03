@@ -4,3 +4,6 @@ import Toast from "vue-toastification";
 import "vue-toastification/dist/index.css";
 
 Vue.use(Toast);
+export default (_context, inject) => {
+  inject('toast', Vue.prototype.$toast);
+}

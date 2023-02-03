@@ -48,6 +48,7 @@
 <script>
 export default {
   name: "products",
+  middleware: ['auth', 'admin'],
   data() {
     return {
       exist: false,
@@ -76,7 +77,7 @@ export default {
           renderBodyCell: ({row, column, rowIndex}, h) => {
             return <div class="flex items-center">
               <div class="border mr-2">
-                <img class="object-cover h-10 w-10" src={row.picture ? this.$config.baseUrlBack + row.picture : require(`~/assets/images/image-demo.png`)} alt=""/>
+                <img class="object-cover h-10 w-10" src={row.picture ? this.$config.baseUrlBack + row.picture : require(`~/assets/images/image-demo.png`)} alt={row.name}/>
               </div>
               <div>
                 <h3>{row.name}</h3>

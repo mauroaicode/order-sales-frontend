@@ -94,7 +94,19 @@ export default {
       const loginSuccess = await this.$auth.loginWith('local', {
         data: this.form
       }).then(res => {
-        this.$auth.redirect('home')
+        this.$gates.setRoles(res.data.roles);
+        this.$laravel.setRoles(res.data.roles);
+        let role = this.$gates.getRoles();
+
+        switch (role[0]) {
+          case 'Administrador':
+            this.$router.push('/users')
+            break;
+          case 'Cliente':
+            this.$auth.redirect('home')
+            break;
+        }
+
         this.$toast.success("Bienvenido");
       })
         .catch(e => {
