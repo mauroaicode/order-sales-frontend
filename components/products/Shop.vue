@@ -1,6 +1,9 @@
 <template>
   <div>
-    <h2 class="font-bold text-4xl"> Tienda</h2>
+    <h2 class="font-bold text-4xl"> Crear Orden de Compra</h2>
+    <div>
+      <p class="text-gray-400">Agrega los productos y genera tu orden compra. La entrega se hará en tres dias luego de la compra.</p>
+    </div>
     <div  class="grid grid-cols-1 md:grid-cols-4 gap-5 mt-10">
       <div v-for="product in products" :key="product.id">
         <CardProduct :product="product"/>

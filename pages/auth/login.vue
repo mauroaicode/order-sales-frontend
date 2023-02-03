@@ -97,7 +97,7 @@ export default {
         this.$gates.setRoles(res.data.roles);
         this.$laravel.setRoles(res.data.roles);
         let role = this.$gates.getRoles();
-
+        console.log(role[0])
         switch (role[0]) {
           case 'Administrador':
             this.$router.push('/users')
@@ -105,9 +105,12 @@ export default {
           case 'Cliente':
             this.$auth.redirect('home')
             break;
+          case 'Empleado':
+            this.$router.push('/orders')
+            break;
         }
 
-        this.$toast.success("Bienvenido");
+        this.$toast.success("Bienvenid@");
       })
         .catch(e => {
           console.log(e)

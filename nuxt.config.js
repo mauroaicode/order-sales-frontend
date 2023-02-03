@@ -26,6 +26,7 @@ export default {
     '~/plugins/vue-gates',
     '~/plugins/laravel-permissions',
     {src: '~/plugins/vue-easytable', ssr: false},
+    {src: '~/plugins/mqtt', mode: 'client', ssr: false},
     {src: '~/plugins/vue-sweetalert2', mode: 'client', ssr: false},
     {src: '~/plugins/vue-file-agent.js', mode: 'client', ssr: false},
     {src: '~/plugins/vue-toastification', mode: 'client', ssr: false},
@@ -40,8 +41,9 @@ export default {
       '~/components',
       '~/components/roles',
       '~/components/users',
-      '~/components/products',
-      '~/components/partials'
+      '~/components/orders',
+      '~/components/partials',
+      '~/components/products'
     ]
   },
   publicRuntimeConfig: {
@@ -107,13 +109,32 @@ export default {
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
     // Workaround to avoid enforcing hard-coded localhost:3000: https://github.com/nuxt-community/axios-module/issues/308
-    baseURL: '/',
+    baseURL: '/'
   },
 
   // PWA module configuration: https://go.nuxtjs.dev/pwa
   pwa: {
+    meta: {
+      title: 'OrdenesVentas',
+      author: 'OrdenesVentas'
+    },
+
     manifest: {
-      lang: 'en'
+      name: 'OrdenesVentas',
+      short_name: 'OrdenesVentas',
+      lang: 'es',
+      display: 'standalone',
+      start_url: '/',
+      workbox: {
+        dev: true // or use a global variable to track the current NODE_ENV, etc to determine dev mode
+      }
+      /*workbox: {
+        exclude: ['_redirects'],
+        enabled: false,
+        cacheAssets: false, // for /*
+        offline: false, // for /_nuxt/*
+        cleanupOutdatedCaches: true
+      }*/
     }
   },
 

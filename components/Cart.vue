@@ -1,9 +1,9 @@
 <template>
   <div>
     <div @click="openCart"
-         class="font-sans block mt-4 lg:inline-block lg:mt-0 lg:ml-6 align-middle text-white hover:text-green-400">
+         class="font-sans block mt-4 lg:inline-block lg:mt-0 lg:ml-6 align-middle text-white hover:text-green-300">
       <a href="#" role="button" class="relative flex">
-        <svg class="flex-1 w-7 h-7 fill-current" viewbox="0 0 24 24">
+        <svg class="flex-1 w-6 h-6 fill-current" viewbox="0 0 24 24">
           <path
             d="M17,18C15.89,18 15,18.89 15,20A2,2 0 0,0 17,22A2,2 0 0,0 19,20C19,18.89 18.1,18 17,18M1,2V4H3L6.6,11.59L5.24,14.04C5.09,14.32 5,14.65 5,15A2,2 0 0,0 7,17H19V15H7.42A0.25,0.25 0 0,1 7.17,14.75C7.17,14.7 7.18,14.66 7.2,14.63L8.1,13H15.55C16.3,13 16.96,12.58 17.3,11.97L20.88,5.5C20.95,5.34 21,5.17 21,5A1,1 0 0,0 20,4H5.21L4.27,2M7,18C5.89,18 5,18.89 5,20A2,2 0 0,0 7,22A2,2 0 0,0 9,20C9,18.89 8.1,18 7,18Z"/>
         </svg>
@@ -76,6 +76,7 @@
 <script>
 import {bus} from "../plugins/bus";
 import ConfirmOrder from "./ConfirmOrder";
+import {publishMQTT} from "../plugins/mqtt";
 
 export default {
   name: "Cart",
@@ -103,7 +104,7 @@ export default {
     },
     calculateDate(){
       let fecha = new Date();
-      let dias = 2; // Número de días a agregar
+      let dias = 3; // Número de días a agregar
       fecha.setDate(fecha.getDate() + dias);
       return fecha
     },
@@ -112,7 +113,7 @@ export default {
       let form = {
         products: this.products,
         total: this.totalCart,
-        customerId: this.$auth.user.id,
+        customerId: this.$auth.user.customer.id,
         date: this.calculateDate()
       }
       this.$swal.fire(
@@ -129,6 +130,7 @@ export default {
             this.$toast.success('Orden de compra creada exitosamente!');
             this.active = false
             this.products = []
+            publishMQTT('new-order-sale', this.$auth.user.name)
             this.openConfirmOrder(form)
           }).catch(e => {
             this.$vs.loading.close()

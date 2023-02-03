@@ -20,8 +20,8 @@
         <div class="flex items-center justify-between">
           <div class="mt-1">
             <button @click="addCart(product)" type="button"
-                    class="text-white bg-blue-800 hover:bg-green-500 focus:ring-4 focus:ring-green-600 font-medium rounded-md text-sm px-3 py-2.5 mr-2 mb-2 focus:outline-none">
-              Agregar al Carrito
+                    class="text-white w-full bg-blue-800 hover:bg-green-500 focus:ring-4 focus:ring-green-600 font-medium rounded-md text-sm px-5 py-2.5 mr-2 mb-2 focus:outline-none">
+              Agregar
             </button>
           </div>
           <div class="p-2">
